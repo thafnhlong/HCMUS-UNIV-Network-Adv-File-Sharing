@@ -5,7 +5,7 @@
  */
 package hcmus.client;
 
-import hcmus.client.gui.ConnectionForm;
+import hcmus.client.gui.ConnetionForm;
 
 /**
  *
@@ -18,7 +18,7 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        ConnectionForm connectionForm = new ConnectionForm();
+        ConnetionForm connectionForm = new ConnetionForm();
         connectionForm.setVisible(true);
     }
     
