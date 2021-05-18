@@ -1,7 +1,9 @@
 package hcmus.fileserver.entity;
 
 import java.io.Serializable;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,12 +48,12 @@ public class Packet {
         }.start();
     }
 
-    static class PKUDP {
+    public static class PKUDP {
         // public int ssid;
         // public int index;
         // 60 bytes - 4-4 = 52 byte data
 
-        public static List<byte[]> getPacket(int ssid, String fileName, Integer[] listFragment) {
+        public static List getPacket(int ssid, String fileName) {
             List<Byte> data = Arrays.asList(SObject.getBytes(fileName));
             int bysize = data.size();
             List<Byte> bssid = Arrays.asList(SObject.getBytesFromInt(ssid));
@@ -65,33 +67,68 @@ public class Packet {
                 LinkedList<Byte> fragmentList = new LinkedList<>();
                 fragmentList.addAll(bssid);
                 fragmentList.addAll(Arrays.asList(SObject.getBytesFromInt(i)));
-                fragmentList.addAll(data);
-                Byte[] fragmentBytes = (Byte[]) fragmentList.toArray();
+
+                for (int j = i * FileReader.BUFFER; j < bysize; j++) {
+                    fragmentList.add(data.get(i + j));
+                }
+
+                Byte[] fragmentBytes = fragmentList.toArray(new Byte[0]);
                 allBytes.add(SObject.convertByteTobyte(fragmentBytes));
             }
-            listFragment = (Integer[]) ret.toArray();
-            return allBytes;
+            Integer[] listFragment = ret.toArray(new Integer[0]);
+            return new ArrayList() {
+                {
+                    add(listFragment);
+                    add(allBytes);
+                }
+            };
         }
 
     }
 
+    private static int PORT = 12021;
+    private static String SVNAME = "localhost";
+
     public void createServer() {
         try {
-            DatagramSocket utpSocket = new DatagramSocket(12021);
-            // DatagramPacket receivedPacket = new DatagramPacket(receivedBuf,
-            // receivedBuf.length);
+            DatagramSocket utpSocket = new DatagramSocket(PORT);
+            byte[] buff = new byte[FileReader.BUFFER];
+            DatagramPacket dpRead = new DatagramPacket(buff, FileReader.BUFFER);
 
-            // utpSocket.receive(receivedPacket);
+            for (int i = 0; i < 2; i++) {
+                utpSocket.receive(dpRead);
+                String sentence = new String(dpRead.getData());
+                System.out.println("Receive From Client: " + sentence);
+            }
+
+            dpRead.setData(new String("21").getBytes());
+            utpSocket.send(dpRead);
+            utpSocket.send(dpRead);
+            utpSocket.send(dpRead);
 
         } catch (Exception e) {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println("Args: ");
-        for (String string : args) {
-            System.out.println(string);
-        }
+    public void createClient() {
+        try {
+            DatagramSocket utpSocket = new DatagramSocket();
+            InetAddress address = InetAddress.getByName(SVNAME);
+            byte[] buff = new byte[FileReader.BUFFER];
+            DatagramPacket dpSend = new DatagramPacket(buff, FileReader.BUFFER, address, PORT);
 
+            dpSend.setData(new String("12").getBytes());
+            utpSocket.send(dpSend);
+            utpSocket.send(dpSend);
+            utpSocket.send(dpSend);
+
+            for (int i = 0; i < 2; i++) {
+                utpSocket.receive(dpSend);
+                String sentence = new String(dpSend.getData());
+                System.out.println("Receive From Server: " + sentence);
+            }
+
+        } catch (Exception e) {
+        }
     }
 }
