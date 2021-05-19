@@ -36,6 +36,8 @@ public class DevClientForm extends javax.swing.JFrame {
     String listServer;// = "192.168.1.1`3306`file1.txt\t200:file2.txt\t1000>192.168.3.3`5578`filetest1.txt\t1024:filetest2.txt\t500:filestudent.csv\t300";
     private List<String> currentInfoServer = null;
     private List<ShareFile> listChoosen;
+    private String ipFileServer;
+    private int portFileServer;
 
     public DevClientForm() {
         initComponents();
@@ -564,8 +566,11 @@ public class DevClientForm extends javax.swing.JFrame {
         for (int i = 0; i < choosenFile.size(); i++) {
             System.out.println(choosenFile.get(i).getFileName());
             System.out.println(choosenFile.get(i).getFileSize());
-
         }
+
+        Manager.getInstance().createClient(choosenFile, ipFileServer, portFileServer);
+
+        btnStatusActionPerformed(null);
     }//GEN-LAST:event_btnDownLoadActionPerformed
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed

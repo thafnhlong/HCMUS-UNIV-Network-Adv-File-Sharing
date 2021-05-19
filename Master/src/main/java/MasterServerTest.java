@@ -21,7 +21,7 @@ public class MasterServerTest {
         System.out.println("Listen File Servers at 12022");
         System.out.println("Listen Clients at 12021");
 
-        FileServer("127.0.0.1`32107`hello.txt");
+        // FileServer("127.0.0.1`32107`hello.txt");
         TimeUnit.SECONDS.sleep(1);
 
         System.out.println("Content Values:" + FileServerService.GetContent());

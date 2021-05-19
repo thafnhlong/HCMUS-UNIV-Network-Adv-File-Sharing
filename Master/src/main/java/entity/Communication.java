@@ -49,7 +49,7 @@ public class Communication {
     }
 
     public boolean IsConnected() {
-        return socket.isConnected()
+        return socket.isConnected();
     }
     
     public void Stop() throws IOException {
