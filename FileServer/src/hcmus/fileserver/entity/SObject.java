@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SObject {
     public static <T> Byte[] getBytes(T obj) {
@@ -52,12 +54,12 @@ public class SObject {
         return null;
     }
 
-    public static Byte[] getBytesFromInt(int obj) {
+    public static Byte[] getBytesFromLong(long obj) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         DataOutputStream out = null;
         try {
             out = new DataOutputStream(bos);
-            out.writeInt(obj);
+            out.writeLong(obj);
             out.flush();
             return convertbyteToByte(bos.toByteArray());
 
@@ -72,12 +74,12 @@ public class SObject {
         return null;
     }
 
-    public static Integer getIntFromBytes(byte[] data) {
+    public static Long getLongFromBytes(byte[] data) {
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
         DataInputStream in = null;
         try {
             in = new DataInputStream(bis);
-            return in.readInt();
+            return in.readLong();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -107,4 +109,22 @@ public class SObject {
         }
         return newBytes;
     }
+
+    public static Long getLong(byte[] data, int index) {
+        byte[] out = new byte[8];
+        int i = 0;
+        for (int j = 0; j < 8; j++) {
+            out[i++] = data[index++];
+        }
+        return getLongFromBytes(out);
+    }
+
+    public static List<Byte> getSubBytes(byte[] data, int start, int end) {
+        List<Byte> ret = new LinkedList<>();
+        for (int i = start; i <= end; i++) {
+            ret.add(data[i]);
+        }
+        return ret;
+    }
+
 }
