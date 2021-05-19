@@ -9,17 +9,23 @@ public class FileServerService extends ClientService {
 
     public static HashMap<String, String> content = new HashMap<>();
     private static int num = 0;
+    private String key;
 
     public FileServerService(Communication communication) {
         super(communication);
     }
 
     public void Accept() throws IOException, InterruptedException {
-        content.put(communication.GetIPClient(), communication.receive());
+        var msg = communication.receive();
+        if (null != msg) {
+            var values = msg.split("`");
+            key = values[0] + values[1];
+            content.put(key, msg);
+        }
     }
 
     public void ClearRepo() {
-        content.remove(communication.GetIPClient());
+        content.remove(key);
     }
 
     @Override
