@@ -5,6 +5,7 @@
  */
 package hcmus.client.gui;
 
+import hcmus.client.service.Manager;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
@@ -22,7 +23,7 @@ public class ConnetionForm extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
     }
-    
+
     private boolean isValidInet4Address(String ip) {
         String IPV4_REGEX
                 = "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
@@ -65,6 +66,8 @@ public class ConnetionForm extends javax.swing.JFrame {
 
         jLabel7.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel7.setText("Port:");
+
+        txtIP.setText("127.0.0.1");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -173,7 +176,7 @@ public class ConnetionForm extends javax.swing.JFrame {
 
         // CHECK_PORT_VALID
         Boolean isValidPort = true;
-        int port;
+        int port = 0;
         try {
             port = Integer.parseInt(txtPort.getText());
             if (port < 1 || port > 65353) {
@@ -188,11 +191,17 @@ public class ConnetionForm extends javax.swing.JFrame {
             return;
         }
 
+        String ip = txtIP.getText();
+        if (!Manager.getInstance().getConnection(ip, port)) {
+            JOptionPane.showMessageDialog(null, "Server không thể kết nối!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         this.setVisible(false);
 
         DevClientForm clientForm = new DevClientForm();
         clientForm.setVisible(true);
-        
+
 
     }//GEN-LAST:event_btnConnectActionPerformed
 

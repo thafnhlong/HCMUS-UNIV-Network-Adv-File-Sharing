@@ -5,11 +5,14 @@
  */
 package hcmus.client.gui;
 
+import hcmus.client.entity.ShareFile;
+import hcmus.client.service.Manager;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,8 +33,9 @@ public class DevClientForm extends javax.swing.JFrame {
     static final String[] ServerColums = new String[]{"STT", "IP", "PORT", "Số lượng File"};
     static final String[] FileColums = new String[]{"STT", "Tên file", "Kích thước file", "Chọn",};
     static final String[] FileStatusColums = new String[]{"File name", "File server", "Port", "Download",};
-    String listServer = "192.168.1.1`3306`file1.txt\t200:file2.txt\t1000>192.168.3.3`5578`filetest1.txt\t1024:filetest2.txt\t500:filestudent.csv\t300";
+    String listServer;// = "192.168.1.1`3306`file1.txt\t200:file2.txt\t1000>192.168.3.3`5578`filetest1.txt\t1024:filetest2.txt\t500:filestudent.csv\t300";
     private List<String> currentInfoServer = null;
+    private List<ShareFile> listChoosen;
 
     public DevClientForm() {
         initComponents();
@@ -44,8 +48,13 @@ public class DevClientForm extends javax.swing.JFrame {
         JTListServer.setDefaultRenderer(Object.class, centerRenderer);
         JTListFile.setDefaultRenderer(Object.class, centerRenderer);
         JTListStatusFile.setDefaultRenderer(Object.class, centerRenderer);
-        loadListServer();
+        getAllFileServer();
 
+    }
+
+    private void getAllFileServer() {
+        listServer = Manager.getInstance().getFileServer();
+        loadListServer();
     }
 
     private void loadListServer() {
@@ -55,6 +64,7 @@ public class DevClientForm extends javax.swing.JFrame {
                 return false;
             }
         };
+
         String[] servers = listServer.split(">");
         for (int i = 0; i < servers.length; i++) {
             String[] info = servers[i].split("`");
@@ -104,6 +114,7 @@ public class DevClientForm extends javax.swing.JFrame {
         JTListServer = new javax.swing.JTable();
         btnConnect = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        btnRefresh = new javax.swing.JButton();
         pnListFile = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         lbIP = new javax.swing.JLabel();
@@ -261,21 +272,30 @@ public class DevClientForm extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel2.setText("Danh sách server:");
 
+        btnRefresh.setText("Làm mới");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnListServerLayout = new javax.swing.GroupLayout(pnListServer);
         pnListServer.setLayout(pnListServerLayout);
         pnListServerLayout.setHorizontalGroup(
             pnListServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnListServerLayout.createSequentialGroup()
+                .addGap(50, 50, 50)
                 .addGroup(pnListServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnListServerLayout.createSequentialGroup()
-                        .addGap(166, 166, 166)
-                        .addComponent(btnConnect, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnConnect, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnListServerLayout.createSequentialGroup()
-                        .addGap(50, 50, 50)
                         .addGroup(pnListServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         pnListServerLayout.setVerticalGroup(
             pnListServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -284,9 +304,11 @@ public class DevClientForm extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(btnConnect, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(pnListServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnConnect, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
+                    .addComponent(btnRefresh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(87, Short.MAX_VALUE))
         );
 
         pnMainCard.add(pnListServer, "pnListServer");
@@ -378,13 +400,13 @@ public class DevClientForm extends javax.swing.JFrame {
                         .addGroup(pnListFileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
                             .addGroup(pnListFileLayout.createSequentialGroup()
-                                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(pnListFileLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(btnDownLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(38, 38, 38)))
+                                .addGap(38, 38, 38))
+                            .addGroup(pnListFileLayout.createSequentialGroup()
+                                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(35, 35, 35))))
         );
         pnListFileLayout.setVerticalGroup(
@@ -432,8 +454,8 @@ public class DevClientForm extends javax.swing.JFrame {
         mainCardLayout.show(pnMainCard, "pnStatusFile");
         btnStatus.setBackground(Color.white);
         btnListServer.setBackground(defaultColor);
-    
-        DefaultTableModel model = new DefaultTableModel(null, FileStatusColums){
+
+        DefaultTableModel model = new DefaultTableModel(null, FileStatusColums) {
             @Override
             public boolean isCellEditable(int i, int i1) {
                 return false;
@@ -442,12 +464,12 @@ public class DevClientForm extends javax.swing.JFrame {
         //Data demo
         String listFileServer = "fileTest1.txt`192.168.1.1`8805`75%>fileTest2.txt`127.0.0.3`8879`33%>student.csv`192.168.1.45`3306`100%";
         String[] infoFileServers = listFileServer.split(">");
-        for (int i = 0; i < infoFileServers.length; i++){
+        for (int i = 0; i < infoFileServers.length; i++) {
             String[] detailInfo = infoFileServers[i].split("`");
             Object[] items = new Object[]{detailInfo[0], detailInfo[1], detailInfo[2], detailInfo[3]};
             model.addRow(items);
         }
-        JTListStatusFile.setModel(model);   
+        JTListStatusFile.setModel(model);
     }//GEN-LAST:event_btnStatusActionPerformed
 
     private void btnListServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListServerActionPerformed
@@ -459,7 +481,10 @@ public class DevClientForm extends javax.swing.JFrame {
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         // TODO add your handling code here:
-        //this.dispose();
+        this.setVisible(false);
+        this.dispose();
+        System.exit(0);
+
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
@@ -495,11 +520,19 @@ public class DevClientForm extends javax.swing.JFrame {
                 return false;
             }
         };
+
+        listChoosen = new ArrayList();
+
         for (int i = 0; i < listFile.length; i++) {
-            String [] result = listFile[i].split("\t");
+            String[] result = listFile[i].split("\t");
             String fileSize = humanReadableByteCountSI(Long.parseLong(result[1]));
             Object[] items = new Object[]{i + 1, result[0], fileSize, false};
             model.addRow(items);
+
+            listChoosen.add(new ShareFile(
+                    result[0],
+                    Long.valueOf(result[1])
+            ));
         }
         JTListFile.setModel(model);
 
@@ -512,25 +545,33 @@ public class DevClientForm extends javax.swing.JFrame {
 
     private void btnDownLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDownLoadActionPerformed
         // TODO add your handling code here:
-        List<String> choosenFile = new ArrayList<String>();
+        List<ShareFile> choosenFile = new ArrayList();
+
         int count = 0;
         for (int i = 0; i < JTListFile.getRowCount(); i++) {
             Boolean checked = Boolean.valueOf(JTListFile.getValueAt(i, 3).toString());
             if (checked) {
-                choosenFile.add(JTListFile.getValueAt(i, 1).toString());
+                choosenFile.add(listChoosen.get(i));
                 count++;
             }
         }
         if (count == 0) {
             JOptionPane.showMessageDialog(null, "Vui lòng chọn file để download!!!", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
+
         //Danh sách các file được chon
         System.out.println("Danh sách các file được chọn");
-        for (int i = 0; i < choosenFile.size(); i++){
-            System.out.println(choosenFile.get(i));
+        for (int i = 0; i < choosenFile.size(); i++) {
+            System.out.println(choosenFile.get(i).getFileName());
+            System.out.println(choosenFile.get(i).getFileSize());
+
         }
     }//GEN-LAST:event_btnDownLoadActionPerformed
+
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        // TODO add your handling code here:
+        getAllFileServer();
+    }//GEN-LAST:event_btnRefreshActionPerformed
 
     /**
      * @param args the command line arguments
@@ -576,6 +617,7 @@ public class DevClientForm extends javax.swing.JFrame {
     private javax.swing.JButton btnDownLoad;
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnListServer;
+    private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnStatus;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
