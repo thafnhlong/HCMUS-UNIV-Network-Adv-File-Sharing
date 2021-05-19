@@ -48,6 +48,10 @@ public class Communication {
         return socket.getInetAddress().isReachable(TIME_OUT);
     }
 
+    public boolean IsConnected() {
+        return socket.isConnected()
+    }
+    
     public void Stop() throws IOException {
         if (null != reader)
             reader.close();
