@@ -16,69 +16,6 @@ import java.util.Random;
 import java.util.TreeMap;
 
 public class Packet {
-
-    private Lock lock = new Lock();
-
-    public void test() {
-        sendHello();
-        try {
-            lock.lock();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        lock.unlock();
-        sendHello();
-        try {
-            lock.lock();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        lock.unlock();
-
-        System.out.println("Bat dong bo");
-    }
-
-    public void sendHello() {
-        try {
-            lock.lock();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        new Thread() {
-            public void run() {
-                try {
-                    Thread.sleep(1000 * 5);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    lock.unlock();
-                }
-            }
-        }.start();
-    }
-
-    public static class PKUDP {
-        // public int index;
-        // 63 max bytes
-        public static final int BUFFERDATA = 8 + FileReader.BUFFER;
-
-        public static byte[] getPacket(long index, List<Byte> bytes) {
-            List<Byte> bindex = Arrays.asList(SObject.getBytesFromLong(index));
-            LinkedList<Byte> fragmentList = new LinkedList<>() {
-                {
-                    addAll(bindex);
-                    addAll(bytes);
-                }
-            };
-            return SObject.convertByteTobyte(fragmentList.toArray(new Byte[0]));
-        }
-
-        public static byte[] getPacket(long index, byte[] bytes) {
-            return getPacket(index, Arrays.asList(SObject.convertbyteToByte(bytes)));
-        }
-
-    }
-
     public void createServer(int PORT) {
         try {
             DatagramSocket utpSocket = new DatagramSocket(PORT);
@@ -100,7 +37,8 @@ public class Packet {
                     System.out.println("Failed send");
                     continue;
                 }
-                sendPacket(dpRead, utpSocket, index, data);
+                DatagramPacket dpSend = new DatagramPacket(buff, PKUDP.BUFFERDATA,dpRead.getAddress(),dpRead.getPort());
+                sendPacket(dpSend, utpSocket, index, data);
                 System.out.println("Send To Client: " + dpRead.getAddress().toString() + "-" + dpRead.getPort());
             }
 
@@ -115,6 +53,7 @@ public class Packet {
         dpSend.setData(ret, 0, ret.length);
         utpSocket.send(dpSend);
     }
+
 
     class ClientRequest extends Thread {
         private String server;
@@ -189,9 +128,9 @@ public class Packet {
     }
 
     public void createClient(List<ShareFile> ShareFiles, String SERVER, int PORT) {
-        System.out.println(ShareFiles.size());
         for (ShareFile shareFile : ShareFiles) {
             new ClientRequest(SERVER, PORT, shareFile).start();
         }
     }
+
 }

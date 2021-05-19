@@ -10,7 +10,6 @@ public class Manager {
 
     private List<ShareFile> db;
     private TcpSocket ts;
-    private UdpServerSocket uss;
 
     public void run() {
         Console cn = Console.getInstace();
@@ -76,12 +75,7 @@ public class Manager {
 
     public void waitClient() {
 
-        while (true) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-            }
-        }
+        
 
     }
 }
