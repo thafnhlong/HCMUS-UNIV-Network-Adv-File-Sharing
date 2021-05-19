@@ -16,6 +16,11 @@ public class FileServerService extends ClientService {
     }
 
     public void Accept() throws IOException, InterruptedException {
+        if (!communication.IsConnected()) {
+           ClearRepo();
+           return;
+        }
+        
         var msg = communication.receive();
         if (null != msg) {
             var values = msg.split("`");
