@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.TreeMap;
 
 public class Packet {
 
@@ -128,21 +129,16 @@ public class Packet {
 
         @Override
         public void run() {
-            DatagramSocket utpSocket;
             try {
-                utpSocket = new DatagramSocket();
-
+                DatagramSocket utpSocket = new DatagramSocket();
                 InetAddress address = InetAddress.getByName(server);
-
                 byte[] buff = new byte[PKUDP.BUFFERDATA];
-                DatagramPacket dpSend = new DatagramPacket(buff, PKUDP.BUFFERDATA, address, port);
-
                 byte[] byteFileName = data.getFileName().getBytes();
 
                 LinkedList<Long> ll = new LinkedList<>();
-
                 for (long i = 0; i < data.getFileSize(); i += FileReader.BUFFER) {
                     ll.add(i);
+                    DatagramPacket dpSend = new DatagramPacket(buff, PKUDP.BUFFERDATA, address, port);
                     sendPacket(dpSend, utpSocket, i, byteFileName);
 
                     if ((i / FileReader.BUFFER) % 10 == 0) // 10 * buffer pause
@@ -154,19 +150,21 @@ public class Packet {
                 long now = Timer.timenow();
 
                 String uniqueFile = Timer.getUniqueNumber();
-                List<String> tempFiles = new LinkedList<>();
+                TreeMap<Long,String> tempFiles = new TreeMap<>();
 
                 while (true) {
                     try {
+                        DatagramPacket dpSend = new DatagramPacket(buff, PKUDP.BUFFERDATA, address, port);
                         utpSocket.receive(dpSend);
                         byte[] recie = dpSend.getData();
                         long index = SObject.getLong(recie, 0);
                         if (ll.contains(index)) {
                             ll.remove(Long.valueOf(index));
                             String fileName = String.valueOf(uniqueFile) + "_" + String.valueOf(index);
-                            tempFiles.add(fileName);
+                            tempFiles.put(index, fileName);
                             List<Byte> fileByteData = SObject.getSubBytes(recie, 8, dpSend.getLength() - 1);
                             ShareFile.writeFileByBytes(fileName, fileByteData);
+                            System.out.println(fileByteData.size());
                         }
                         System.out.println("Receive From Server: -" + index + "-" + data.getFileName());
                     } catch (SocketTimeoutException e) {
@@ -176,11 +174,12 @@ public class Packet {
                         break;
                     }
                     if (Timer.timenow() - now > 1) {
+                        DatagramPacket dpSend = new DatagramPacket(buff, PKUDP.BUFFERDATA, address, port);
                         sendPacket(dpSend, utpSocket, ll.getFirst(), byteFileName);
                     }
-                    ShareFile.mergeFile(data.getFileName(), tempFiles);
-                    System.out.println("Client ok");
                 }
+                ShareFile.mergeFile(data.getFileName(), tempFiles);
+                System.out.println("Client ok");
             } catch (IOException | InterruptedException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -192,7 +191,7 @@ public class Packet {
     public void createClient(List<ShareFile> ShareFiles, String SERVER, int PORT) {
         System.out.println(ShareFiles.size());
         for (ShareFile shareFile : ShareFiles) {
-            new ClientRequest(SERVER,PORT,shareFile).start();
+            new ClientRequest(SERVER, PORT, shareFile).start();
         }
     }
 }

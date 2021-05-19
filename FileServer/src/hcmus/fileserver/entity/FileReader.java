@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public class FileReader {
-    public static final int BUFFER = 500; //52*1042
+    public static final int BUFFER = 52*1042;
 
     public static byte[] readFileByIndex(long offset, String fileName) {
         RandomAccessFile raf;

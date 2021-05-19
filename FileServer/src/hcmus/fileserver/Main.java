@@ -37,15 +37,16 @@ public class Main {
 
         // test();
 
-        sv();
-        cl();
-
-        // if(args.length>0){
-        // sv();
-        // } else {
-        // cl();
-        // }
-
+        if(false){
+            sv();
+            cl();
+        } else {
+            if(args.length>0){
+            sv();
+            } else {
+            cl();
+            }
+        }
     }
 
     static void sv() {
@@ -72,6 +73,6 @@ public class Main {
             add(ee.get(0));
         }};
 
-        new Packet().createClient(ee2,"127.0.0.1",12021);
+        new Packet().createClient(ee,"localhost",12021);
     }
 }

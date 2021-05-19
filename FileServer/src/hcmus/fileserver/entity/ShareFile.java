@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.Map.Entry;
 
 public class ShareFile {
 
@@ -57,16 +59,17 @@ public class ShareFile {
         }
     }
 
-    public static void mergeFile(String fileName, List<String> tempFiles) {
+    public static void mergeFile(String fileName, TreeMap<Long,String> tempFiles) {
         OutputStream os = null;
         InputStream is = null;
 
         try {
             os = new FileOutputStream("./Download/"+fileName);
 
-            for (String file : tempFiles) {
+            for (Entry<Long,String> entrylist : tempFiles.entrySet()) {
+                String fname = "./Tmp/"+entrylist.getValue();
                 try {
-                    is = new FileInputStream("./Tmp/"+file);
+                    is = new FileInputStream(fname);
                     byte[] buffer = new byte[1024];
                     int length;
                     while ((length = is.read(buffer)) > 0) {
@@ -82,6 +85,7 @@ public class ShareFile {
                         e.printStackTrace();
                     }
                 }
+                new File(fname).delete();
             }
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
