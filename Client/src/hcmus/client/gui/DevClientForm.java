@@ -29,6 +29,7 @@ public class DevClientForm extends javax.swing.JFrame {
     Color defaultColor = new Color(204, 204, 204);
     static final String[] ServerColums = new String[]{"STT", "IP", "PORT", "Số lượng File"};
     static final String[] FileColums = new String[]{"STT", "Tên file", "Kích thước file", "Chọn",};
+    static final String[] FileStatusColums = new String[]{"File name", "File server", "Port", "Download",};
     String listServer = "192.168.1.1`3306`file1.txt\t200:file2.txt\t1000>192.168.3.3`5578`filetest1.txt\t1024:filetest2.txt\t500:filestudent.csv\t300";
     private List<String> currentInfoServer = null;
 
@@ -42,6 +43,7 @@ public class DevClientForm extends javax.swing.JFrame {
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         JTListServer.setDefaultRenderer(Object.class, centerRenderer);
         JTListFile.setDefaultRenderer(Object.class, centerRenderer);
+        JTListStatusFile.setDefaultRenderer(Object.class, centerRenderer);
         loadListServer();
 
     }
@@ -93,6 +95,10 @@ public class DevClientForm extends javax.swing.JFrame {
         btnExit = new javax.swing.JButton();
         pnMainCard = new javax.swing.JPanel();
         pnStatusFile = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        JTListStatusFile = new javax.swing.JTable();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         pnListServer = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         JTListServer = new javax.swing.JTable();
@@ -178,15 +184,53 @@ public class DevClientForm extends javax.swing.JFrame {
         pnMainCard.setPreferredSize(new java.awt.Dimension(625, 300));
         pnMainCard.setLayout(new java.awt.CardLayout());
 
+        JTListStatusFile.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        JTListStatusFile.setRowSelectionAllowed(false);
+        JTListStatusFile.setSelectionBackground(new java.awt.Color(255, 255, 255));
+        jScrollPane3.setViewportView(JTListStatusFile);
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel6.setText("Danh sách lịch sử các file tải xuống");
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel7.setText("Danh sách File:");
+
         javax.swing.GroupLayout pnStatusFileLayout = new javax.swing.GroupLayout(pnStatusFile);
         pnStatusFile.setLayout(pnStatusFileLayout);
         pnStatusFileLayout.setHorizontalGroup(
             pnStatusFileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 610, Short.MAX_VALUE)
+            .addGroup(pnStatusFileLayout.createSequentialGroup()
+                .addGroup(pnStatusFileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnStatusFileLayout.createSequentialGroup()
+                        .addGap(143, 143, 143)
+                        .addComponent(jLabel6))
+                    .addGroup(pnStatusFileLayout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(pnStatusFileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         pnStatusFileLayout.setVerticalGroup(
             pnStatusFileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 348, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnStatusFileLayout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(jLabel6)
+                .addGap(48, 48, 48)
+                .addComponent(jLabel7)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pnMainCard.add(pnStatusFile, "pnStatusFile");
@@ -242,7 +286,7 @@ public class DevClientForm extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(btnConnect, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(77, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         pnMainCard.add(pnListServer, "pnListServer");
@@ -332,7 +376,7 @@ public class DevClientForm extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnListFileLayout.createSequentialGroup()
                         .addGroup(pnListFileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
                             .addGroup(pnListFileLayout.createSequentialGroup()
                                 .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -360,7 +404,7 @@ public class DevClientForm extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnDownLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pnMainCard.add(pnListFile, "pnListFile");
@@ -388,6 +432,22 @@ public class DevClientForm extends javax.swing.JFrame {
         mainCardLayout.show(pnMainCard, "pnStatusFile");
         btnStatus.setBackground(Color.white);
         btnListServer.setBackground(defaultColor);
+    
+        DefaultTableModel model = new DefaultTableModel(null, FileStatusColums){
+            @Override
+            public boolean isCellEditable(int i, int i1) {
+                return false;
+            }
+        };
+        //Data demo
+        String listFileServer = "fileTest1.txt`192.168.1.1`8805`75%>fileTest2.txt`127.0.0.3`8879`33%>student.csv`192.168.1.45`3306`100%";
+        String[] infoFileServers = listFileServer.split(">");
+        for (int i = 0; i < infoFileServers.length; i++){
+            String[] detailInfo = infoFileServers[i].split("`");
+            Object[] items = new Object[]{detailInfo[0], detailInfo[1], detailInfo[2], detailInfo[3]};
+            model.addRow(items);
+        }
+        JTListStatusFile.setModel(model);   
     }//GEN-LAST:event_btnStatusActionPerformed
 
     private void btnListServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListServerActionPerformed
@@ -399,6 +459,7 @@ public class DevClientForm extends javax.swing.JFrame {
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         // TODO add your handling code here:
+        //this.dispose();
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
@@ -451,15 +512,23 @@ public class DevClientForm extends javax.swing.JFrame {
 
     private void btnDownLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDownLoadActionPerformed
         // TODO add your handling code here:
+        List<String> choosenFile = new ArrayList<String>();
         int count = 0;
         for (int i = 0; i < JTListFile.getRowCount(); i++) {
             Boolean checked = Boolean.valueOf(JTListFile.getValueAt(i, 3).toString());
             if (checked) {
+                choosenFile.add(JTListFile.getValueAt(i, 1).toString());
                 count++;
             }
         }
         if (count == 0) {
             JOptionPane.showMessageDialog(null, "Vui lòng chọn file để download!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        //Danh sách các file được chon
+        System.out.println("Danh sách các file được chọn");
+        for (int i = 0; i < choosenFile.size(); i++){
+            System.out.println(choosenFile.get(i));
         }
     }//GEN-LAST:event_btnDownLoadActionPerformed
 
@@ -501,6 +570,7 @@ public class DevClientForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable JTListFile;
     private javax.swing.JTable JTListServer;
+    private javax.swing.JTable JTListStatusFile;
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnConnect;
     private javax.swing.JButton btnDownLoad;
@@ -510,9 +580,12 @@ public class DevClientForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JLabel lbIP;
     private javax.swing.JLabel lbNumofFile;
