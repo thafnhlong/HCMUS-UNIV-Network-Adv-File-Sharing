@@ -93,15 +93,15 @@ public class Packet {
 
                 while (true) {
                     try {
-                        DatagramPacket dpSend = new DatagramPacket(buff, PKUDP.BUFFERDATA, address, port);
-                        utpSocket.receive(dpSend);
-                        byte[] recie = dpSend.getData();
+                        DatagramPacket dpRead = new DatagramPacket(buff, PKUDP.BUFFERDATA, address, port);
+                        utpSocket.receive(dpRead);
+                        byte[] recie = dpRead.getData();
                         long index = SObject.getLong(recie, 0);
                         if (ll.contains(index)) {
                             ll.remove(Long.valueOf(index));
                             String fileName = String.valueOf(uniqueFile) + "_" + String.valueOf(index);
                             tempFiles.put(index, fileName);
-                            List<Byte> fileByteData = SObject.getSubBytes(recie, 8, dpSend.getLength() - 1);
+                            List<Byte> fileByteData = SObject.getSubBytes(recie, 8, dpRead.getLength() - 1);
                             ShareFile.writeFileByBytes(fileName, fileByteData);
                             System.out.println(fileByteData.size());
                         }

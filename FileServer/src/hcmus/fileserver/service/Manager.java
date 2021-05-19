@@ -1,7 +1,14 @@
 package hcmus.fileserver.service;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.DatagramSocket;
+import java.net.Socket;
+import java.net.SocketException;
 import java.util.List;
 
+import hcmus.fileserver.entity.Packet;
 import hcmus.fileserver.entity.ShareFile;
 
 public class Manager {
@@ -35,7 +42,7 @@ public class Manager {
             cn.write("Nhap port: ");
             portsv = Integer.parseInt(cn.readString());
 
-            if (createServer(ipsv, portsv)) {
+            if (createServer(portsv)) {
                 break;
             }
             cn.write("Khong the su dung port nay\n");
@@ -43,7 +50,7 @@ public class Manager {
 
         sendToMaster(ipsv, portsv);
 
-        waitClient();
+        waitClient(portsv);
     }
 
     public void connectToMaster(String ip, int port) {
@@ -65,17 +72,20 @@ public class Manager {
         if (sb.length() > 0) {
             sb.deleteCharAt(sb.length() - 1);
         }
-        ts.send(sb);
+        ts.send(sb.append("\n"));
     }
 
-    public boolean createServer(String ip, int port) {
-
+    public boolean createServer(int port) {
+        try {
+            DatagramSocket utpSocket = new DatagramSocket(port);
+            utpSocket.close();
+        } catch (SocketException e) {
+            return false;
+        }
         return true;
     }
 
-    public void waitClient() {
-
-        
-
+    public void waitClient(int port) {
+        new Packet().createServer(port);
     }
 }

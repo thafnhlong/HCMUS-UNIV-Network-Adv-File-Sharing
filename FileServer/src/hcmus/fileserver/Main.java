@@ -1,6 +1,7 @@
 package hcmus.fileserver;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,39 +13,25 @@ import hcmus.fileserver.service.Manager;
 
 public class Main {
 
-    static void test() {
-        // System.out.println(FileReader.readFileByIndex(0, "README.md").length);
-        // System.out.println(FileReader.readFileByIndex(16, "README.md").length);
-
-        // for (var q : FileReader.readFileByIndex(11, "README.md")) {
-
-        // System.out.println(SObject.getBytes("README.md").length); // 16bytes
-        // var e = Packet.PKUDP.getPacket(123, "TEST");
-
-        // Integer[] list1 = (Integer[]) e.get(0);
-        // for (Integer integer : list1) {
-        // System.out.println(integer);
-        // }
-        // List<byte[]> list2 = (List<byte[]>) e.get(1);
-        // for (byte[] bs : list2) {
-        // System.out.println(bs.length);
-        // }
+    public static void main(String[] args) {
+        System.out.println("This is File Server");
+        new Manager().run();
     }
 
-    public static void main(String[] args) {
+    public static void main2(String[] args) {
         System.out.println("This is File Server");
         // new Manager().run();
 
         // test();
 
-        if(false){
+        if (false) {
             sv();
             cl();
         } else {
-            if(args.length>0){
-            sv();
+            if (args.length > 0) {
+                sv();
             } else {
-            cl();
+                cl();
             }
         }
     }
@@ -69,10 +56,12 @@ public class Main {
 
         var ee = ShareFile.listFilesForFolder("./SharedFile");
 
-        var ee2 = new LinkedList<ShareFile>(){{
-            add(ee.get(0));
-        }};
+        var ee2 = new LinkedList<ShareFile>() {
+            {
+                add(ee.get(0));
+            }
+        };
 
-        new Packet().createClient(ee,"localhost",12021);
+        new Packet().createClient(ee, "localhost", 12021);
     }
 }
