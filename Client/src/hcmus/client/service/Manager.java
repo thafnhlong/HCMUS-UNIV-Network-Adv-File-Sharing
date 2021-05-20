@@ -9,12 +9,16 @@ import hcmus.client.entity.FileReader;
 import hcmus.client.entity.PKUDP;
 import hcmus.client.entity.SObject;
 import hcmus.client.entity.ShareFile;
+import hcmus.client.entity.StatusFileTransfer;
 import hcmus.client.entity.Timer;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
@@ -30,6 +34,14 @@ public class Manager {
     private static Manager sing;
 
     private Manager() {
+        File theDir = new File("./Tmp");
+        if (!theDir.exists()) {
+            theDir.mkdirs();
+        }
+        theDir = new File("./Download");
+        if (!theDir.exists()) {
+            theDir.mkdirs();
+        }
     }
 
     public static Manager getInstance() {
@@ -70,11 +82,13 @@ public class Manager {
         private String server;
         private int port;
         private ShareFile data;
+        private StatusFileTransfer sft;
 
-        public ClientRequest(String server, int port, ShareFile data) {
+        public ClientRequest(String server, int port, ShareFile data, StatusFileTransfer sft) {
             this.server = server;
             this.port = port;
             this.data = data;
+            this.sft = sft;
         }
 
         @Override
@@ -104,6 +118,7 @@ public class Manager {
                 String uniqueFile = Timer.getUniqueNumber();
 
                 TreeMap<Long, String> tempFiles = new TreeMap();
+                int allIndex = ll.size();
 
                 while (true) {
                     try {
@@ -118,6 +133,11 @@ public class Manager {
                             List<Byte> fileByteData = SObject.getSubBytes(recie, 8, dpRead.getLength() - 1);
                             ShareFile.writeFileByBytes(fileName, fileByteData);
                             System.out.println(fileByteData.size());
+
+                            float value = 100 * (1 - (float)ll.size() / allIndex);
+                            synchronized (sft) {
+                                sft.setDownload(String.format("%.2f", value) + "%");
+                            }
                         }
                         System.out.println("Receive From Server: -" + index + "-" + data.getFileName());
                     } catch (SocketTimeoutException e) {
@@ -126,10 +146,12 @@ public class Manager {
                     if (ll.size() == 0) {
                         break;
                     }
+
                     if (Timer.timenow() - now > 1) {
                         DatagramPacket dpSend = new DatagramPacket(buff, PKUDP.BUFFERDATA, address, port);
                         sendPacket(dpSend, utpSocket, ll.getFirst(), byteFileName);
                     }
+                    Thread.sleep(100);
                 }
                 ShareFile.mergeFile(data.getFileName(), tempFiles);
                 System.out.println("Client ok");
@@ -141,9 +163,10 @@ public class Manager {
 
     }
 
-    public void createClient(List<ShareFile> ShareFiles, String SERVER, int PORT) {
+    public void createClient(List<ShareFile> ShareFiles, String SERVER, int PORT, List<StatusFileTransfer> listStatus) {
+        Iterator<StatusFileTransfer> sft = listStatus.iterator();
         for (ShareFile shareFile : ShareFiles) {
-            new ClientRequest(SERVER, PORT, shareFile).start();
+            new ClientRequest(SERVER, PORT, shareFile, sft.next()).start();
         }
     }
 

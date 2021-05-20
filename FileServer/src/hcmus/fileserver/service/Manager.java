@@ -31,7 +31,7 @@ public class Manager {
         int i = 1;
         List<String> ips = FetchIP.getAllIp();
         for (String ipsv : ips) {
-            cn.write(i + ", " + ipsv + "\n");
+            cn.write(i++ + ", " + ipsv + "\n");
         }
         cn.write("Ban chon: ");
         int ipsvIndex = Integer.parseInt(cn.readString());
