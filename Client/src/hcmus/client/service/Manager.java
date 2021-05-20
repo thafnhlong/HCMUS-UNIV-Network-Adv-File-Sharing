@@ -102,13 +102,6 @@ public class Manager {
                 LinkedList<Long> ll = new LinkedList();
                 for (long i = 0; i < data.getFileSize(); i += FileReader.BUFFER) {
                     ll.add(i);
-                    DatagramPacket dpSend = new DatagramPacket(buff, PKUDP.BUFFERDATA, address, port);
-                    sendPacket(dpSend, utpSocket, i, byteFileName);
-
-                    if ((i / FileReader.BUFFER) % 10 == 0) // 10 * buffer pause
-                    {
-                        Thread.sleep(100);
-                    }
                 }
 
                 utpSocket.setSoTimeout(100);
@@ -147,11 +140,10 @@ public class Manager {
                         break;
                     }
 
-                    if (Timer.timenow() - now > 1) {
-                        DatagramPacket dpSend = new DatagramPacket(buff, PKUDP.BUFFERDATA, address, port);
-                        sendPacket(dpSend, utpSocket, ll.getFirst(), byteFileName);
-                    }
-                    Thread.sleep(100);
+                    DatagramPacket dpSend = new DatagramPacket(buff, PKUDP.BUFFERDATA, address, port);
+                    sendPacket(dpSend, utpSocket, ll.getFirst(), byteFileName);
+
+                    Thread.sleep(10);
                 }
                 ShareFile.mergeFile(data.getFileName(), tempFiles);
                 // System.out.println("Client ok");

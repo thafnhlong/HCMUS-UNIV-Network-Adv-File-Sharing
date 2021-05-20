@@ -445,7 +445,7 @@ public class DevClientForm extends javax.swing.JFrame {
             SwingUtilities.invokeLater(()->{
                 refreshListStatus();
             });
-        }, 2000);
+        }, 1000);
         new Thread(timerRunnable).start();
 
     }// GEN-LAST:event_btnStatusActionPerformed
