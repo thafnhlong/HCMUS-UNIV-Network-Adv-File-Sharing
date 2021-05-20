@@ -23,7 +23,7 @@ public class FileServerService extends ClientService {
         var msg = communication.receive();
         if (null != msg) {
             var values = msg.split("`");
-            key = values[0] + values[1];
+            key = values[0] +":"+ values[1];
             content.put(key, msg);
         }
     }
