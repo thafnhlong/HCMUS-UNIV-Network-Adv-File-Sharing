@@ -8,7 +8,6 @@ import java.util.HashMap;
 public class FileServerService extends ClientService {
 
     public static HashMap<String, String> content = new HashMap<>();
-    private static int num = 0;
     private String key;
 
     public FileServerService(Communication communication) {
@@ -35,21 +34,14 @@ public class FileServerService extends ClientService {
 
     @Override
     public void run() {
-        HealthCheck();
-
         while (true) {
             try {
                 Accept();
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
                 ClearRepo();
+                break;
             }
         }
-    }
-
-    private void HealthCheck() {
-        var checkerThread = new Thread(new HealthCheck(communication));
-        checkerThread.start();
     }
 
     public static String GetContent() {
