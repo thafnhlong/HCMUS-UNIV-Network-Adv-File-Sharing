@@ -42,11 +42,12 @@ public class ShareFile {
     public static List<ShareFile> listFilesForFolder(String path) {
         final File folder = new File(path);
         List<ShareFile> temp = new LinkedList<ShareFile>();
-        for (final File fileEntry : folder.listFiles()) {
-            if (fileEntry.isDirectory())
-                continue;
-            temp.add(new ShareFile(fileEntry.getName(), fileEntry.length()));
-        }
+        if(folder.listFiles()!=null)
+            for (final File fileEntry : folder.listFiles()) {
+                if (fileEntry.isDirectory())
+                    continue;
+                temp.add(new ShareFile(fileEntry.getName(), fileEntry.length()));
+            }
         return temp;
     }
 
