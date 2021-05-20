@@ -58,7 +58,7 @@ public class Manager {
 
         boolean result = ts.connect(ip, port);
         if (!result) {
-            System.out.println("Khong the ket noi toi server");
+            Console.getInstace().write("Khong the ket noi toi server");
             System.exit(1);
         }
     }

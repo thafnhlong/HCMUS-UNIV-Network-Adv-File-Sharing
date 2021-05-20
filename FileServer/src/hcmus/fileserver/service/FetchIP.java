@@ -17,7 +17,8 @@ public class FetchIP {
             while (interfaces.hasMoreElements()) {
                 NetworkInterface iface = interfaces.nextElement();
                 // filters out 127.0.0.1 and inactive interfaces
-                if (iface.isLoopback() || !iface.isUp())
+                // if (iface.isLoopback() || !iface.isUp())
+                if (!iface.isUp())
                     continue;
 
                 Enumeration<InetAddress> addresses = iface.getInetAddresses();

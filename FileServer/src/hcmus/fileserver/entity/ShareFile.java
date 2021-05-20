@@ -50,54 +50,55 @@ public class ShareFile {
         return temp;
     }
 
-    public static void writeFileByBytes(String fileName, List<Byte> data) {
-        try (FileOutputStream fos = new FileOutputStream("./Tmp/" + fileName)) {
-            Byte[] yourBytes = data.toArray(new Byte[0]);
-            fos.write(SObject.convertByteTobyte(yourBytes));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    // public static void writeFileByBytes(String fileName, List<Byte> data) {
+    //     try (FileOutputStream fos = new FileOutputStream("./Tmp/" + fileName)) {
+    //         Byte[] yourBytes = data.toArray(new Byte[0]);
+    //         fos.write(SObject.convertByteTobyte(yourBytes));
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
 
-    public static void mergeFile(String fileName, TreeMap<Long,String> tempFiles) {
-        OutputStream os = null;
-        InputStream is = null;
+    // public static void mergeFile(String fileName, TreeMap<Long,String> tempFiles) {
+    //     OutputStream os = null;
+    //     InputStream is = null;
 
-        try {
-            os = new FileOutputStream("./Download/"+fileName);
+    //     try {
+    //         os = new FileOutputStream("./Download/"+fileName);
 
-            for (Entry<Long,String> entrylist : tempFiles.entrySet()) {
-                String fname = "./Tmp/"+entrylist.getValue();
-                try {
-                    is = new FileInputStream(fname);
-                    byte[] buffer = new byte[1024];
-                    int length;
-                    while ((length = is.read(buffer)) > 0) {
-                        os.write(buffer, 0, length);
-                    }
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                new File(fname).delete();
-            }
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-            try {
-                os.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
+    //         for (Entry<Long,String> entrylist : tempFiles.entrySet()) {
+    //             String fname = "./Tmp/"+entrylist.getValue();
+    //             try {
+    //                 is = new FileInputStream(fname);
+    //                 byte[] buffer = new byte[1024];
+    //                 int length;
+    //                 while ((length = is.read(buffer)) > 0) {
+    //                     os.write(buffer, 0, length);
+    //                 }
+    //             } catch (IOException e) {
+    //                 // TODO Auto-generated catch block
+    //                 e.printStackTrace();
+    //             } finally {
+    //                 try {
+    //                     is.close();
+    //                 } catch (IOException e) {
+    //                     e.printStackTrace();
+    //                 }
+    //             }
+    //             new File(fname).delete();
+    //         }
+    //     } catch (FileNotFoundException e) {
+    //         // TODO Auto-generated catch block
+    //         e.printStackTrace();
+    //     } finally {
+    //         try {
+    //             os.close();
+    //         } catch (IOException e) {
+    //             // TODO Auto-generated catch block
+    //             e.printStackTrace();
+    //         }
+    //     }
 
-    }
+    // }
+
 }
