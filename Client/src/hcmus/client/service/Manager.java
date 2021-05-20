@@ -132,14 +132,14 @@ public class Manager {
                             tempFiles.put(index, fileName);
                             List<Byte> fileByteData = SObject.getSubBytes(recie, 8, dpRead.getLength() - 1);
                             ShareFile.writeFileByBytes(fileName, fileByteData);
-                            System.out.println(fileByteData.size());
+                            // System.out.println(fileByteData.size());
 
                             float value = 100 * (1 - (float)ll.size() / allIndex);
                             synchronized (sft) {
                                 sft.setDownload(String.format("%.2f", value) + "%");
                             }
                         }
-                        System.out.println("Receive From Server: -" + index + "-" + data.getFileName());
+                        // System.out.println("Receive From Server: -" + index + "-" + data.getFileName());
                     } catch (SocketTimeoutException e) {
                     }
 
@@ -154,7 +154,7 @@ public class Manager {
                     Thread.sleep(100);
                 }
                 ShareFile.mergeFile(data.getFileName(), tempFiles);
-                System.out.println("Client ok");
+                // System.out.println("Client ok");
             } catch (IOException | InterruptedException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();

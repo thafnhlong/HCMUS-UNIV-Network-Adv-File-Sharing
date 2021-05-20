@@ -76,8 +76,10 @@ public class DevClientForm extends javax.swing.JFrame {
         String[] servers = listServer.split(">");
         for (int i = 0; i < servers.length; i++) {
             String[] info = servers[i].split("`");
-            String[] files = info[2].split(":");
-            Object[] items = new Object[] { i + 1, info[0], info[1], files.length };
+            int svFiles = 0;
+            if(info.length>2)
+                svFiles = info[2].split(":").length;
+            Object[] items = new Object[] { i + 1, info[0], info[1], svFiles };
             model.addRow(items);
         }
         JTListServer.setModel(model);
@@ -493,7 +495,9 @@ public class DevClientForm extends javax.swing.JFrame {
         ipFileServer = info[0];
         portFileServer = Integer.valueOf(info[1]);
 
-        String[] listFile = info[info.length - 1].split(":");
+        String[] listFile = new String[0];
+        if (info.length> 2)
+            listFile = info[info.length - 1].split(":");
         lbNumofFile.setText("Số lượng File: " + listFile.length);
         DefaultTableModel model = new DefaultTableModel(null, FileColums) {
             public Class<?> getColumnClass(int column) {
@@ -554,14 +558,13 @@ public class DevClientForm extends javax.swing.JFrame {
         if (count == 0) {
             JOptionPane.showMessageDialog(null, "Vui lòng chọn file để download!!!", "Error",
                     JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         List<StatusFileTransfer> listDownloadSession = new ArrayList();
 
         // Danh sách các file được chon
-        System.out.println("Danh sách các file được chọn: ");
         for (int i = 0; i < choosenFile.size(); i++) {
-            System.out.println(choosenFile.get(i).getFileName() + "-" + choosenFile.get(i).getFileSize());
             StatusFileTransfer se = new StatusFileTransfer(ipFileServer, portFileServer,
                     choosenFile.get(i).getFileName(), "0%");
             listDownload.add(se);
